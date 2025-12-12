@@ -43,12 +43,20 @@ export default function CampusModel() {
                         material.depthWrite = true;
                         material.depthTest = true;
 
-                        // Set render side to front only (prevents double-sided overlap issues)
-                        material.side = THREE.FrontSide;
+                        // Use DoubleSide for ground/floor surfaces to ensure visibility
+                        // FrontSide can cause some surfaces to disappear
+                        material.side = THREE.DoubleSide;
 
                         // Fix alpha test for textures with transparency
                         if (material.map && material.map.format === THREE.RGBAFormat) {
-                            material.alphaTest = 0.5;
+                            material.alphaTest = 0.1;
+                        }
+
+                        // Ensure proper tone mapping and encoding
+                        if (material.isMeshStandardMaterial || material.isMeshPhysicalMaterial) {
+                            // Boost metalness and roughness for better appearance
+                            if (material.metalness === undefined) material.metalness = 0;
+                            if (material.roughness === undefined) material.roughness = 0.8;
                         }
 
                         // Ensure material updates
