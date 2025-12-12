@@ -33,6 +33,24 @@ export default function CampusModel() {
                             material.emissiveMap.needsUpdate = true;
                         }
 
+                        // FIX TRANSPARENCY/DEPTH ISSUES
+                        // Disable transparency if the material doesn't need it
+                        if (material.opacity === 1 && !material.alphaMap) {
+                            material.transparent = false;
+                        }
+
+                        // Ensure depth write is enabled (fixes overlapping/see-through issue)
+                        material.depthWrite = true;
+                        material.depthTest = true;
+
+                        // Set render side to front only (prevents double-sided overlap issues)
+                        material.side = THREE.FrontSide;
+
+                        // Fix alpha test for textures with transparency
+                        if (material.map && material.map.format === THREE.RGBAFormat) {
+                            material.alphaTest = 0.5;
+                        }
+
                         // Ensure material updates
                         material.needsUpdate = true;
                     });
