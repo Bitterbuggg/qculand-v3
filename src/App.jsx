@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment } from '@react-three/drei';
-import { EffectComposer, HueSaturation } from '@react-three/postprocessing';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import CampusModel from './components/CampusModel';
 
@@ -13,19 +12,20 @@ export default function App() {
                 gl={{
                     antialias: true,
                     toneMapping: THREE.ACESFilmicToneMapping,
-                    toneMappingExposure: 0.8,
+                    toneMappingExposure: 1.0,
                     outputColorSpace: THREE.SRGBColorSpace,
                 }}
             >
-                {/* Lighting - no shadows */}
-                <ambientLight intensity={0.6} />
+                {/* Lighting - adjusted for better color reproduction */}
+                <ambientLight intensity={0.8} />
                 <directionalLight
                     position={[10, 20, 10]}
-                    intensity={1.2}
+                    intensity={1.5}
                 />
-
-                {/* Environment for better reflections */}
-                <Environment preset="city" />
+                <directionalLight
+                    position={[-10, 10, -10]}
+                    intensity={0.5}
+                />
 
                 {/* 3D Model */}
                 <Suspense fallback={null}>
@@ -40,17 +40,6 @@ export default function App() {
                     minDistance={5}
                     maxDistance={50}
                 />
-
-                {/* Ground plane for reference */}
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
-                    <planeGeometry args={[100, 100]} />
-                    <meshStandardMaterial color="#2d3436" />
-                </mesh>
-
-                {/* Post-processing effects */}
-                <EffectComposer>
-                    <HueSaturation saturation={0.3} />
-                </EffectComposer>
             </Canvas>
 
             {/* UI Overlay */}
